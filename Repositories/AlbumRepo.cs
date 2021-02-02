@@ -14,7 +14,7 @@ namespace ImageAlbumAPI.Repositories
             _context = ctx;
         }
 
-        public IEnumerable<Album> Albums => _context.Albums;
+        public IEnumerable<Album> Albums => _context.Albums.Include(c => c.User);
 
         public void AddAlbum(Album album)
         {

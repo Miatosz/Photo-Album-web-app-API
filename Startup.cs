@@ -20,7 +20,7 @@ using Newtonsoft.Json.Serialization;
 
 using System.IO;
 using Microsoft.Extensions.FileProviders;
-
+using ImageAlbumAPI.Services;
 
 namespace ImageAlbumAPI
 {
@@ -39,6 +39,10 @@ namespace ImageAlbumAPI
             services.AddTransient<IUserRepo, UserRepo>();
             services.AddTransient<IPhotoRepo, PhotoRepo>();
             services.AddTransient<IAlbumRepo, AlbumRepo>();
+
+            services.AddTransient<IPhotoService, PhotoService>();
+            services.AddTransient<IAlbumService, AlbumService>();
+            services.AddTransient<IUserService, UserService>();
 
             services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(
                 Configuration.GetConnectionString("DevConnectionString")

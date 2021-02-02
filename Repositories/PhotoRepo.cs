@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using ImageAlbumAPI.Data;
 using ImageAlbumAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ImageAlbumAPI.Repositories
@@ -25,15 +26,16 @@ namespace ImageAlbumAPI.Repositories
             _context.SaveChanges();
         }
 
-        public Photo DeletePhoto(int id)
+        public ActionResult DeletePhoto(int id)
         {
             var photo = _context.Photos.Find(id);
             if (photo != null)
             {
                 _context.Photos.Remove(photo);
                 _context.SaveChanges();
+                return new OkResult();
             }
-            return photo;
+            return new NotFoundResult();
         }
 
         public void UpdatePhoto(Photo photo)

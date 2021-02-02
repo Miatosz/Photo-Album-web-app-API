@@ -4,14 +4,16 @@ using ImageAlbumAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ImageAlbumAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210129164336_29.01")]
+    partial class _2901
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -61,14 +63,9 @@ namespace ImageAlbumAPI.Migrations
                     b.Property<string>("PhotoPath")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("AlbumId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Photos");
                 });
@@ -91,7 +88,7 @@ namespace ImageAlbumAPI.Migrations
             modelBuilder.Entity("ImageAlbumAPI.Models.Album", b =>
                 {
                     b.HasOne("ImageAlbumAPI.Models.User", "User")
-                        .WithMany("Albums")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -104,22 +101,11 @@ namespace ImageAlbumAPI.Migrations
                         .HasForeignKey("AlbumId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("ImageAlbumAPI.Models.User", null)
-                        .WithMany("Photos")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Album");
                 });
 
             modelBuilder.Entity("ImageAlbumAPI.Models.Album", b =>
                 {
-                    b.Navigation("Photos");
-                });
-
-            modelBuilder.Entity("ImageAlbumAPI.Models.User", b =>
-                {
-                    b.Navigation("Albums");
-
                     b.Navigation("Photos");
                 });
 #pragma warning restore 612, 618

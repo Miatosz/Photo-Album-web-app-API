@@ -1,13 +1,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using AutoMapper;
-using ImageAlbumAPI.Data;
 using ImageAlbumAPI.Dtos.GetDtos;
 using ImageAlbumAPI.Models;
-using ImageAlbumAPI.Repositories;
+using ImageAlbumAPI.Services;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ImageAlbumAPI.Controllers
 {
@@ -15,33 +13,30 @@ namespace ImageAlbumAPI.Controllers
     [Route("api/[controller]")]
     public class PhotoController : ControllerBase
     {
-        private readonly AppDbContext _context;
-        private readonly IPhotoRepo _repo;
+        private readonly IPhotoService _photoService;
         private readonly IMapper _mapper;
 
-        public PhotoController(IPhotoRepo repo, IMapper mapper, AppDbContext ctx)
+        public PhotoController(IPhotoService photoService, IMapper mapper)
         {
-            _context = ctx;
-            _repo = repo;
+            _photoService = photoService;
             _mapper = mapper;
         }
-
+        
         // GET: api/photo
         [HttpGet]
-        public ActionResult<IEnumerable<GetPhotoDto>> Get()
-            => Ok(_mapper.Map<IEnumerable<GetPhotoDto>>(_repo.Photos));
+        public ActionResult<List<GetPhotoDto>> Get()
+            => _mapper.Map<IEnumerable<GetPhotoDto>>(_photoService.GetPhotos()).ToList();
+          
 
         // GET: api/photo/{id}
         [HttpGet("{id}")]
-        public ActionResult<GetPhotoDto> Get(int id)
+        public ActionResult<GetPhotoDto> GetById(int id)
         {
-            var photo = _context.Photos.Include(c => c.Album).FirstOrDefault(c => c.Id == id);
+            var photo = _photoService.GetPhotoById(id);
             if (photo == null)
             {
                 return NotFound();
-            }
-
-            
+            }            
             return Ok(_mapper.Map<GetPhotoDto>(photo));
         }
 
@@ -49,22 +44,25 @@ namespace ImageAlbumAPI.Controllers
         [HttpPost]
         public ActionResult PostPhoto([FromBody] Photo photo)
         {
-            _repo.AddPhoto(photo);
-            return Ok();
+            if (ModelState.IsValid)
+            {
+                _photoService.AddPhoto(photo);
+                return Ok(photo);
+            }
+            return BadRequest();
         }
 
         // DELETE: api/photo/{id}
         [HttpDelete("{id}")]
-        public void DeletePhoto(int id)
-        {
-            _repo.DeletePhoto(id);
-        }
+        public ActionResult DeletePhoto(int id)
+            => _photoService.DeletePhoto(id);
+
 
         // PUT: api/photo
         [HttpPut]
         public ActionResult<GetPhotoDto> PutPhoto([FromBody] Photo photo)
         {
-            _repo.UpdatePhoto(photo);
+            _photoService.UpdatePhoto(photo);
             return Ok(_mapper.Map<GetPhotoDto>(photo));
         }
 
@@ -72,14 +70,13 @@ namespace ImageAlbumAPI.Controllers
         [HttpPatch("{id}")]
         public StatusCodeResult PatchPhoto(int id, [FromBody] JsonPatchDocument<Photo> patch)
         {
-            var photo = _repo.Photos.First(c => c.Id == id);
+            var photo = _photoService.GetPhotoById(id);
             if (photo != null)
             {
                 patch.ApplyTo(photo);
                 return Ok();
             }
             return NotFound();
-        }
-    
+        }    
     }
 }

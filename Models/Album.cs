@@ -17,5 +17,7 @@ namespace ImageAlbumAPI.Models
         [ForeignKey("UserId")]
         public User User { get; set; }
 
+        public virtual ICollection<Photo> Photos {get; set;}
+
     }
 }

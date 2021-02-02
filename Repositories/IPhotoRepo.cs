@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using ImageAlbumAPI.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ImageAlbumAPI.Repositories
 {
@@ -7,7 +8,7 @@ namespace ImageAlbumAPI.Repositories
     {
         IEnumerable<Photo> Photos {get;}
         void AddPhoto(Photo photo);
-        Photo DeletePhoto(int id);
+        ActionResult DeletePhoto(int id);
         void UpdatePhoto(Photo photo);
     }
 }

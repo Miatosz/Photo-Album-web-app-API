@@ -9,6 +9,7 @@ namespace ImageAlbumAPI.Models
         public int Id { get; set; }
         public string UserName { get; set; }
 
-        
+        public virtual ICollection<Photo> Photos {get; set;}
+        public virtual ICollection<Album> Albums {get; set;}
     }
 }
