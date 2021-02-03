@@ -1,26 +1,18 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ImageAlbumAPI.Data;
 using ImageAlbumAPI.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using AutoMapper;
 using Newtonsoft.Json.Serialization;
-
-
-using System.IO;
-using Microsoft.Extensions.FileProviders;
 using ImageAlbumAPI.Services;
+using ImageAlbumAPI.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace ImageAlbumAPI
 {
@@ -48,6 +40,24 @@ namespace ImageAlbumAPI
                 Configuration.GetConnectionString("DevConnectionString")
             ));
 
+            services.AddIdentity<User, IdentityRole>(opts => {
+                opts.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                opts.User.RequireUniqueEmail = false;
+                opts.Password.RequiredLength = 6;
+                opts.Password.RequireNonAlphanumeric = false;
+                opts.Password.RequireLowercase = true;
+                opts.Password.RequireUppercase = true;
+                opts.Password.RequireDigit = true;
+            }
+            )
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
+            
+
+
+
+
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -61,8 +71,6 @@ namespace ImageAlbumAPI
 
             services.AddCors();
 
-
-            
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -75,7 +83,7 @@ namespace ImageAlbumAPI
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
             app.UseRouting();
 
             app.UseAuthorization();

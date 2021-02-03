@@ -22,7 +22,7 @@ namespace ImageAlbumAPI.Services
             => _userRepo.Users;
         public User GetUserById(int id)
         {
-            var user = _userRepo.Users.FirstOrDefault(c => c.Id == id);
+            var user = _userRepo.Users.FirstOrDefault(c => c.UserId == id);
             if (user != null)
             {
                 return user;
@@ -39,7 +39,7 @@ namespace ImageAlbumAPI.Services
 
         public IEnumerable<Photo> GetUserPhotos(int userId)
         {
-            var photos = _photoRepo.Photos.Where(c => c.Album.UserId == userId);
+            var photos = _photoRepo.Photos;//.Where(c => c.Album.UserId == userId);
             return photos;
         }
 

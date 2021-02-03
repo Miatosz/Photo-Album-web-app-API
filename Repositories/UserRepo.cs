@@ -14,11 +14,11 @@ namespace ImageAlbumAPI.Repositories
             _context = ctx;
         }
 
-        public IEnumerable<User> Users => _context.Users.Include(c => c.Albums).Include(c => c.Photos);
+        public IEnumerable<User> Users => _context.Users;
 
         public void AddUser(User user)
         {
-            if (user.Id == 0)
+            if (user.UserId == 0)
             {
                 _context.Users.Add(user);
             }
@@ -38,7 +38,7 @@ namespace ImageAlbumAPI.Repositories
 
         public void UpdateUser(User user)
         {
-            var updatedUser = _context.Users.Find(user.Id);
+            var updatedUser = _context.Users.Find(user.UserId);
             if (updatedUser != null)
             {
                 updatedUser.UserName = user.UserName;
