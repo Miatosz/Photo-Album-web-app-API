@@ -2,7 +2,7 @@
 
 namespace ImageAlbumAPI.Migrations
 {
-    public partial class fv : Migration
+    public partial class th : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ImageAlbumAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210202163908_2.02-v.3")]
-    partial class _202v3
+    [Migration("20210204181657_fv")]
+    partial class fv
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -44,6 +44,69 @@ namespace ImageAlbumAPI.Migrations
                     b.ToTable("Albums");
                 });
 
+            modelBuilder.Entity("ImageAlbumAPI.Models.Comment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int?>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Content")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PhotoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("PhotoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Comment");
+                });
+
+            modelBuilder.Entity("ImageAlbumAPI.Models.Like", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .UseIdentityColumn();
+
+                    b.Property<int?>("CommentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PhotoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
+
+                    b.HasIndex("PhotoId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Like");
+                });
+
             modelBuilder.Entity("ImageAlbumAPI.Models.Photo", b =>
                 {
                     b.Property<int>("Id")
@@ -59,6 +122,9 @@ namespace ImageAlbumAPI.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("NumberOfLikes")
+                        .HasColumnType("int");
 
                     b.Property<string>("PhotoPath")
                         .HasColumnType("nvarchar(max)");
@@ -103,9 +169,6 @@ namespace ImageAlbumAPI.Migrations
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("NormalizedEmail")
                         .HasColumnType("nvarchar(max)");
 
@@ -145,6 +208,44 @@ namespace ImageAlbumAPI.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ImageAlbumAPI.Models.Comment", b =>
+                {
+                    b.HasOne("ImageAlbumAPI.Models.Comment", null)
+                        .WithMany("Replies")
+                        .HasForeignKey("CommentId");
+
+                    b.HasOne("ImageAlbumAPI.Models.Photo", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("PhotoId");
+
+                    b.HasOne("ImageAlbumAPI.Models.User", "User")
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("ImageAlbumAPI.Models.Like", b =>
+                {
+                    b.HasOne("ImageAlbumAPI.Models.Comment", null)
+                        .WithMany("Likes")
+                        .HasForeignKey("CommentId");
+
+                    b.HasOne("ImageAlbumAPI.Models.Photo", null)
+                        .WithMany("Likes")
+                        .HasForeignKey("PhotoId");
+
+                    b.HasOne("ImageAlbumAPI.Models.User", "User")
+                        .WithMany("Likes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("ImageAlbumAPI.Models.Photo", b =>
                 {
                     b.HasOne("ImageAlbumAPI.Models.Album", "Album")
@@ -164,9 +265,27 @@ namespace ImageAlbumAPI.Migrations
                     b.Navigation("Photos");
                 });
 
+            modelBuilder.Entity("ImageAlbumAPI.Models.Comment", b =>
+                {
+                    b.Navigation("Likes");
+
+                    b.Navigation("Replies");
+                });
+
+            modelBuilder.Entity("ImageAlbumAPI.Models.Photo", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Likes");
+                });
+
             modelBuilder.Entity("ImageAlbumAPI.Models.User", b =>
                 {
                     b.Navigation("Albums");
+
+                    b.Navigation("Comments");
+
+                    b.Navigation("Likes");
 
                     b.Navigation("Photos");
                 });

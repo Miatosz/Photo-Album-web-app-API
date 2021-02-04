@@ -12,6 +12,8 @@ namespace ImageAlbumAPI.Profiles
             CreateMap<User, GetUserDto>();
             CreateMap<Album, GetAlbumDto>();
             CreateMap<Photo, GetPhotoDto>();
+            CreateMap<Like, GetLikeDto>();
+            CreateMap<Comment, GetCommentDto>();
         }
         
     }

@@ -15,7 +15,10 @@ namespace ImageAlbumAPI.Repositories
             _context = ctx;
         }
 
-        public IEnumerable<Photo> Photos => _context.Photos.Include(c => c.Album);
+        public IEnumerable<Photo> Photos => _context.Photos.Include(c => c.Album)
+                                                            .Include(c => c.Likes)
+                                                            .Include(c => c.Comments)
+                                                            .ThenInclude(c => c.Replies);
 
         public void AddPhoto(Photo photo)
         {
@@ -47,7 +50,21 @@ namespace ImageAlbumAPI.Repositories
                 updatedPhoto.DateOfAdd = photo.DateOfAdd;
                 updatedPhoto.Album = photo.Album;
                 updatedPhoto.PhotoPath = photo.PhotoPath;
+                updatedPhoto.Likes = photo.Likes;
+                updatedPhoto.NumberOfLikes = photo.NumberOfLikes;
+                updatedPhoto.Comments = photo.Comments;
+                // updatedPhoto.Comments.ForEach(c => c.Replies = photo.Comments)
                 
+            }
+            _context.SaveChanges();
+        }
+
+        public void UpdateComments(Photo photo)
+        {
+            var updatedPhoto = _context.Photos.Find(photo.Id);
+            if (updatedPhoto != null)
+            { 
+                updatedPhoto.Comments = photo.Comments;
             }
             _context.SaveChanges();
         }

@@ -21,6 +21,12 @@ namespace ImageAlbumAPI.Data
                 .HasForeignKey(e => e.AlbumId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            // modelBuilder.Entity<Like>()
+            //     .HasOne<User>(e => e.User)
+            //     .WithMany(d => d.Likes)
+            //     .HasForeignKey(e => e.UserId)
+            //     .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Album>()
                 .HasOne<User>(e => e.User)
                 .WithMany(d => d.Albums)

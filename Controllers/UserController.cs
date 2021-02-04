@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using ImageAlbumAPI.Dtos.GetDtos;
 using ImageAlbumAPI.Models;
+using ImageAlbumAPI.Models.BindingModels;
 using ImageAlbumAPI.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
@@ -60,6 +61,34 @@ namespace ImageAlbumAPI.Controllers
             usersGetDto.ForEach(c => c.Albums
                                         .ForEach(d => d.Photos = new List<GetPhotoDto>(
                                             _mapper.Map<IEnumerable<GetPhotoDto>>(_albumService.GetAlbumPhotos(d.Id).ToList()))));
+
+            usersGetDto.ForEach(c => c.Albums
+                                        .ForEach(d => d.Photos
+                                            .ForEach(v => v.Likes = new List<GetLikeDto>(
+                                                _mapper.Map<IEnumerable<GetLikeDto>>(v.Likes)
+                                            ))));
+
+            usersGetDto.ForEach(c => c.Albums
+                                        .ForEach(d => d.Photos
+                                            .ForEach(v => v.Comments = new List<GetCommentDto>(
+                                                _mapper.Map<IEnumerable<GetCommentDto>>(v.Comments)
+                                            ))));
+
+
+            usersGetDto.ForEach(c => c.Albums
+                                        .ForEach(d => d.Photos
+                                            .ForEach(v => v.Comments
+                                                .ForEach(b => b.Replies = new List<GetCommentDto>(
+                                                _mapper.Map<IEnumerable<GetCommentDto>>(v.Comments)
+                                            )))));
+            
+            //var x = _userManager.Users.FirstOrDefault(c => c.UserId == 2).UserName;
+            // usersGetDto.ForEach(c => c.Albums
+            //                             .ForEach(d => d.Photos 
+            //                                 .ForEach(v => v.Likes
+            //                                     .ForEach(b => b.UserName = _userManager.Users.FirstOrDefault(n => n.UserId == b.Id).UserName
+            //                                        ))));
+
             return Ok(usersGetDto);
         }
 
@@ -156,11 +185,11 @@ namespace ImageAlbumAPI.Controllers
         // POST /api/user/{id}/changePassword
         [HttpPost("{id}/changePassword")]
         [Route("{id}/changePassword")]
-        public async Task<ActionResult> ChangeUserPassword([FromBody] CreateUserModel model, int id)
+        public async Task<ActionResult> ChangeUserPassword([FromBody] ChangePasswordModel model, string id)
         {
-            User user = _userManager.Users.FirstOrDefault(c => c.UserId == id);
-            //if (user.Email == email)
-            //{
+            User user = _userManager.Users.FirstOrDefault(c => c.Id == id);
+            if (user.Email == model.Email)
+            {
                 user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
                 IdentityResult validPass = await _userValidator.ValidateAsync(_userManager, user);
                 if (validPass.Succeeded)
@@ -179,7 +208,9 @@ namespace ImageAlbumAPI.Controllers
                 {
                     return BadRequest(validPass.Errors);
                 }
-                return BadRequest(validPass.Errors);
+                
+            }
+            return BadRequest("Wrong Email");
         }
 
         // DELETE: /api/user/{id}

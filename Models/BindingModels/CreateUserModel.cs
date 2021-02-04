@@ -4,7 +4,7 @@ namespace ImageAlbumAPI.Models
 {
     public class CreateUserModel
     {
-        // [Required]
+        [Required]
         public string UserName { get; set; }
 
         [Required]

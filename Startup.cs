@@ -31,6 +31,7 @@ namespace ImageAlbumAPI
             services.AddTransient<IUserRepo, UserRepo>();
             services.AddTransient<IPhotoRepo, PhotoRepo>();
             services.AddTransient<IAlbumRepo, AlbumRepo>();
+            // services.AddTransient<ICommentRepo, CommentRepo>();
 
             services.AddTransient<IPhotoService, PhotoService>();
             services.AddTransient<IAlbumService, AlbumService>();

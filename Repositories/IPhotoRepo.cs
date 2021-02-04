@@ -10,5 +10,6 @@ namespace ImageAlbumAPI.Repositories
         void AddPhoto(Photo photo);
         ActionResult DeletePhoto(int id);
         void UpdatePhoto(Photo photo);
+        void UpdateComments(Photo photo);
     }
 }
