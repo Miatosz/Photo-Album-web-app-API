@@ -12,8 +12,8 @@ namespace ImageAlbumAPI.Services
         void UnlikePhoto(Photo photoModel, Like likeModel);
         void AddComment(Photo photoModel, Comment model);
         void RemoveComment(Photo photoModel, Comment model);
-        void AddReply(Comment comment, Comment reply);
-        void RemoveReply(Comment comment, Comment reply);
+        void AddReply(Comment comment, Reply reply, Photo photo);
+        void RemoveReply(Comment comment, Reply reply);
 
     }
 }

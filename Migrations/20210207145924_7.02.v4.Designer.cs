@@ -4,14 +4,16 @@ using ImageAlbumAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ImageAlbumAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210207145924_7.02.v4")]
+    partial class _702v4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -52,10 +54,11 @@ namespace ImageAlbumAPI.Migrations
                     b.Property<string>("Content")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("PhotoId")
-                        .HasColumnType("int");
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Type")
+                    b.Property<int?>("PhotoId")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -72,7 +75,7 @@ namespace ImageAlbumAPI.Migrations
 
                     b.ToTable("Comments");
 
-                    b.HasDiscriminator<int>("Type").HasValue(0);
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Comment");
                 });
 
             modelBuilder.Entity("ImageAlbumAPI.Models.Like", b =>
@@ -205,7 +208,7 @@ namespace ImageAlbumAPI.Migrations
 
                     b.HasIndex("CommentId");
 
-                    b.HasDiscriminator().HasValue(1);
+                    b.HasDiscriminator().HasValue("Reply");
                 });
 
             modelBuilder.Entity("ImageAlbumAPI.Models.Album", b =>

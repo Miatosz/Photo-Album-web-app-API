@@ -75,12 +75,14 @@ namespace ImageAlbumAPI.Controllers
                                             ))));
 
 
-            usersGetDto.ForEach(c => c.Albums
-                                        .ForEach(d => d.Photos
-                                            .ForEach(v => v.Comments
-                                                .ForEach(b => b.Replies = new List<GetCommentDto>(
-                                                _mapper.Map<IEnumerable<GetCommentDto>>(v.Comments)
-                                            )))));
+            // usersGetDto.ForEach(c => c.Albums
+            //                             .ForEach(d => d.Photos
+            //                                 .ForEach(v => v.Comments
+            //                                     .ForEach(b => b.Replies = new List<GetCommentDto>(
+            //                                     _mapper.Map<IEnumerable<GetCommentDto>>(v.Comments)
+            //                                 )))));
+
+            
             
             //var x = _userManager.Users.FirstOrDefault(c => c.UserId == 2).UserName;
             // usersGetDto.ForEach(c => c.Albums

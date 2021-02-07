@@ -58,7 +58,7 @@ namespace ImageAlbumAPI.Services
             model.UserName = _userRepo.Users.FirstOrDefault(c => c.UserId == model.UserId).UserName;
             model.User = _userRepo.Users.FirstOrDefault(c => c.UserId == model.UserId);
             model.Likes = new List<Like>();
-            model.Replies = new List<Comment>();
+            model.Replies = new List<Reply>();
             if (photoModel.Comments == null)
             {
                 photoModel.Comments = new List<Comment>();
@@ -73,19 +73,20 @@ namespace ImageAlbumAPI.Services
             _photoRepo.UpdatePhoto(photoModel);
         }
 
-        public void AddReply(Comment comment, Comment reply)
+        public void AddReply(Comment comment, Reply reply, Photo photo)
         {
-            var photo = GetPhotoById(comment.PhotoId);
+            //var photo = GetPhotoById(comment.PhotoId);
+            //var photo = _photoRepo.Photos.Where(a => a.Comments);
+            
             if (comment.Replies == null)
             {
-                comment.Replies = new List<Comment>();
+                comment.Replies = new List<Reply>();
             }
             comment.Replies.Add(reply);
             _photoRepo.UpdateComments(photo);
-            //_commentRepo.UpdateComment(comment);           
         }
 
-        public void RemoveReply(Comment comment, Comment reply)
+        public void RemoveReply(Comment comment, Reply reply)
         {
             throw new System.NotImplementedException();
         }

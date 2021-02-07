@@ -27,8 +27,23 @@ namespace ImageAlbumAPI.Controllers
         
         // GET: api/photo
         [HttpGet]
-        public ActionResult<List<GetPhotoDto>> Get()
-            => _mapper.Map<IEnumerable<GetPhotoDto>>(_photoService.GetPhotos()).ToList();
+        public ActionResult<Photo> Get()
+        {
+            var photos = _photoService.GetPhotos();
+            var getPhotoDto = _mapper.Map<IEnumerable<GetPhotoDto>>(photos).ToList();
+
+            getPhotoDto.ForEach(c => c.Comments  = new List<GetCommentDto>(
+                                _mapper.Map<IEnumerable<GetCommentDto>>(c.Comments))
+                            );
+
+            getPhotoDto.ForEach(c => c.Comments
+                            .ForEach(d => d.Replies = new List<GetCommentDto>(
+                                _mapper.Map<IEnumerable<GetCommentDto>>(d.Replies))
+                            ));      
+          
+            return Ok(getPhotoDto);
+        }
+            //10/comment/1/reply
           
 
         // GET: api/photo/{id}
@@ -141,14 +156,14 @@ namespace ImageAlbumAPI.Controllers
         // POST: api/photo/{id}/comment/{id}/reply
         [HttpPost("{photoId}/comment/{commentId}/reply")]
         [Route("{photoId}/comment/{commentId}/reply")]
-        public ActionResult AddReply(int photoId, int commentId, Comment model)
+        public ActionResult AddReply(int photoId, int commentId, Reply model)
         {
             var photo = _photoService.GetPhotoById(photoId);
             var comment = photo.Comments.FirstOrDefault(c => c.Id == commentId);
             if (comment != null)
             {
                 // _photoService.AddComment(photo, comment);
-                _photoService.AddReply(comment, model);
+                _photoService.AddReply(comment, model, photo);
                 
                 return Ok();
             }

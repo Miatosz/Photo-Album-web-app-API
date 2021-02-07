@@ -12,7 +12,7 @@ namespace ImageAlbumAPI.Models
         public string Description { get; set; }
 
         
-        public int? UserId { get; set; } 
+        public int UserId { get; set; } 
         
         [ForeignKey("UserId")]
         public User User { get; set; }
