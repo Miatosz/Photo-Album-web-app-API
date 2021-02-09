@@ -12,7 +12,7 @@ namespace ImageAlbumAPI.Models
         public virtual ICollection<Like> Likes {get; set;}
         public virtual ICollection<Reply> Replies {get; set;}
 
-        public int UserId { get; set; } 
+        public string UserId { get; set; } 
         
         [ForeignKey("UserId")]
         public User User { get; set; }

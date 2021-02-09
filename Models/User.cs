@@ -14,5 +14,11 @@ namespace ImageAlbumAPI.Models
         public virtual ICollection<Album> Albums {get; set;}
         public virtual ICollection<Like> Likes {get; set;}
         public virtual ICollection<Comment> Comments {get; set;}
+
+
+        public virtual ICollection<User> Following {get; set;}
+        public virtual ICollection<User> Followers {get; set;}
+
+
     }
 }

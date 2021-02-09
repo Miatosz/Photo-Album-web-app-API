@@ -8,5 +8,9 @@ namespace ImageAlbumAPI.Dtos.GetDtos
         public int UserId { get; set; }
         public string UserName { get; set; }
         public List<GetAlbumDto> Albums { get; set; }
+        public List<GetUserDto> Following { get; set; }
+        public List<GetUserDto> Followers { get; set; }
+
+        
     }
 }

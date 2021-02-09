@@ -40,7 +40,7 @@ namespace ImageAlbumAPI.Services
         public void LikePhoto(Photo photoModel, Like model)
         {
             photoModel.NumberOfLikes++;
-            model.UserName = _userRepo.Users.FirstOrDefault(c => c.UserId == model.UserId).UserName;
+            model.UserName = _userRepo.Users.FirstOrDefault(c => c.UserId.ToString() == model.UserId).UserName;
             photoModel.Likes.Add(model);
             _photoRepo.UpdatePhoto(photoModel);           
         }
@@ -55,8 +55,8 @@ namespace ImageAlbumAPI.Services
 
         public void AddComment(Photo photoModel, Comment model)
         {
-            model.UserName = _userRepo.Users.FirstOrDefault(c => c.UserId == model.UserId).UserName;
-            model.User = _userRepo.Users.FirstOrDefault(c => c.UserId == model.UserId);
+            model.UserName = _userRepo.Users.FirstOrDefault(c => c.UserId.ToString() == model.UserId).UserName;
+            model.User = _userRepo.Users.FirstOrDefault(c => c.UserId.ToString() == model.UserId);
             model.Likes = new List<Like>();
             model.Replies = new List<Reply>();
             if (photoModel.Comments == null)
@@ -68,7 +68,7 @@ namespace ImageAlbumAPI.Services
         }
         public void RemoveComment(Photo photoModel, Comment model)
         {
-            model.UserName = _userRepo.Users.FirstOrDefault(c => c.UserId == model.UserId).UserName;
+            model.UserName = _userRepo.Users.FirstOrDefault(c => c.UserId.ToString() == model.UserId).UserName;
             photoModel.Comments.RemoveAll(c => c.UserId == model.UserId);
             _photoRepo.UpdatePhoto(photoModel);
         }

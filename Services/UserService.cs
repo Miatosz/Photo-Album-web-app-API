@@ -32,7 +32,7 @@ namespace ImageAlbumAPI.Services
 
         public IEnumerable<Album> GetUserAlbums(int userId)
         {
-            var albums = _albumRepo.Albums.Where(c => c.UserId == userId);
+            var albums = _albumRepo.Albums.Where(c => c.UserId == userId.ToString());
             return albums;
         }
 

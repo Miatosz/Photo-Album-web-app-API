@@ -7,6 +7,7 @@ using ImageAlbumAPI.Dtos.GetDtos;
 using ImageAlbumAPI.Models;
 using ImageAlbumAPI.Models.BindingModels;
 using ImageAlbumAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ImageAlbumAPI.Controllers
 {
+
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class UserController : ControllerBase
     {
@@ -39,7 +42,9 @@ namespace ImageAlbumAPI.Controllers
         }
 
         // GET: /api/user
+        
         [HttpGet]
+
         public ActionResult<IEnumerable<User>> Get()
         {
             var users = _userService.GetUsers();
@@ -131,6 +136,8 @@ namespace ImageAlbumAPI.Controllers
         // }
         
         // POST: /api/user
+
+        [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserModel model)
         {
             if (ModelState.IsValid)
