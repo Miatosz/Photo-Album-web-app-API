@@ -1,8 +1,3 @@
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![Pulls][pulls-shield]][pulls-url]
 
 <!-- PROJECT LOGO -->
 <br />
@@ -73,13 +68,3 @@ Currently, an MVP (Minimal Value Project) is being created, where the backend al
 This section will soon contain steps how to get a local and running copy...
 
 
-<!-- MARKDOWN LINKS & IMAGES -->
-[contributors-url]: https://github.com/Miatsz/Photo-Album-web-app-API/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/UgzSourceCode/SocialKnow.svg?style=flat-square
-[forks-url]: https://github.com/UgzSourceCode/SocialKnow/network/members
-[stars-shield]: https://img.shields.io/github/stars/UgzSourceCode/SocialKnow.svg?style=flat-square
-[stars-url]: https://github.com/UgzSourceCode/SocialKnow/stargazers
-[issues-shield]: https://img.shields.io/github/issues/UgzSourceCode/SocialKnow.svg?style=flat-square
-[issues-url]: https://github.com/UgzSourceCode/SocialKnow/issues
-[pulls-shield]: https://img.shields.io/github/issues-pr/UgzSourceCode/SocialKnow.svg?style=flat-square
-[pulls-url]: https://github.com/UgzSourceCode/SocialKnow/pulls
