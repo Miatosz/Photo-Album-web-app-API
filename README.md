@@ -62,9 +62,18 @@ Frontend
 
 Currently, an MVP (Minimal Value Project) is being created, where the backend already has part of the implementation.
 
-<!-- GETTING STARTED -->
-## Getting Started
+<!-- Setup -->
+## Setup
+To open and run this project, follow this commands:
+1. git clone https://github.com/Miatosz/Photo-Album-web-app-API.git
+2. cd .\Photo-Album-web-app-API\
+3. in Appsettings.json specify your database connection
+4. dotnet ef database update
+5. dotnet run
 
-This section will soon contain steps how to get a local and running copy...
+Then you can test app in e.g. Postman on port 5001(https://localhost:5001/)
+
+##...or simply click here => https://pcpartsshop.azurewebsites.net
+
 
 
