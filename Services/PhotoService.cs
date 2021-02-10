@@ -37,19 +37,22 @@ namespace ImageAlbumAPI.Services
             return _photoRepo.Photos;
         }
 
-        public void LikePhoto(Photo photoModel, Like model)
+        public void LikePhoto(Photo photoModel, string UserId)
         {
             photoModel.NumberOfLikes++;
-            model.UserName = _userRepo.Users.FirstOrDefault(c => c.UserId.ToString() == model.UserId).UserName;
-            photoModel.Likes.Add(model);
+            photoModel.Likes.Add(new Like
+            {
+                UserId = UserId,
+                UserName = _userRepo.Users.FirstOrDefault(c => c.Id == UserId).UserName               
+            });
             _photoRepo.UpdatePhoto(photoModel);           
         }
 
 
-        public void UnlikePhoto(Photo photoModel, Like model)
+        public void UnlikePhoto(Photo photoModel, string UserId)
         {
             photoModel.NumberOfLikes--;
-            photoModel.Likes.RemoveAll(c => c.UserId == model.UserId);
+            photoModel.Likes.RemoveAll(c => c.UserId == UserId);
             _photoRepo.UpdatePhoto(photoModel);          
         }
 

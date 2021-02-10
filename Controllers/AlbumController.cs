@@ -1,12 +1,14 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
 using ImageAlbumAPI.Dtos.GetDtos;
 using ImageAlbumAPI.Models;
 using ImageAlbumAPI.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace ImageAlbumAPI.Controllers
 {
@@ -14,13 +16,16 @@ namespace ImageAlbumAPI.Controllers
     [Route("api/[controller]")]
     public class AlbumController : ControllerBase
     {
+        private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
         private readonly IAlbumService _albumService;
         private readonly IUserService _userService;
 
-        public AlbumController(IAlbumService albumService, IPhotoService photoService, IUserService userService, IMapper mapper)
+        public AlbumController(IAlbumService albumService, IPhotoService photoService, IUserService userService, 
+                                    IMapper mapper, UserManager<User> userManager)
         {
+            _userManager = userManager;
             _mapper = mapper;
             _photoService = photoService;
             _albumService = albumService;
@@ -42,7 +47,7 @@ namespace ImageAlbumAPI.Controllers
             albumsGetDto = _mapper.Map<List<GetAlbumDto>>(albums);
 
             albumsGetDto.ForEach(c => c.Photos = new List<GetPhotoDto>(
-               _mapper.Map<IEnumerable<GetPhotoDto>>(_albumService.GetAlbumPhotos(c.Id).ToList())));
+                _mapper.Map<IEnumerable<GetPhotoDto>>(_albumService.GetAlbumPhotos(c.Id).ToList())));
 
             albumsGetDto.ForEach(c => c.OwnerName = _albumService.GetAlbumById(c.Id).User.UserName);
 
@@ -78,24 +83,39 @@ namespace ImageAlbumAPI.Controllers
 
         // POST: api/album
         [HttpPost]
+        [Authorize]
         public ActionResult PostAlbum([FromBody] Album album)
         {
+            album.User = GetCurrentLoggedUser().Result;
             _albumService.AddAlbum(album);
             return Ok();
         }
 
         // DELETE: api/album/{id}
         [HttpDelete("{id}")]
+        [Authorize]
         public void DeleteAlbum(int id)
         {
-            _albumService.DeleteAlbum(id);
+            var album = _albumService.GetAlbumById(id);
+            var user = GetCurrentLoggedUser().Result;
+
+            if (user.Albums.Contains(album))
+            {
+                _albumService.DeleteAlbum(id);
+            }
+            
         }
 
         // PUT: api/album
         [HttpPut]
         public ActionResult<GetAlbumDto> PutAlbum([FromBody] Album album)
         {
-            _albumService.UpdateAlbum(album);
+            var user = GetCurrentLoggedUser().Result;
+
+            if (user.Albums.FirstOrDefault(c => c.Id == album.Id) != null)
+            {
+                _albumService.UpdateAlbum(album);
+            }            
             return Ok(_mapper.Map<GetAlbumDto>(album));
         }
 
@@ -104,12 +124,26 @@ namespace ImageAlbumAPI.Controllers
         public StatusCodeResult PatchAlbum(int id, [FromBody] JsonPatchDocument<Album> patch)
         {
             var album = _albumService.GetAlbumById(id);
-            if (album != null)
+            var user = GetCurrentLoggedUser().Result;
+
+            if (user.Albums.Contains(album))
             {
-                patch.ApplyTo(album);
-                return Ok();
-            }
-            return NotFound();
+                if (album != null)
+                {
+                    patch.ApplyTo(album);
+                    return Ok();
+                }
+                return NotFound();
+            }            
+            return BadRequest();
+        }
+
+        private async Task<User> GetCurrentLoggedUser()
+        {   
+            var user = await _userManager.FindByNameAsync(HttpContext.User.Identity.Name);
+            user.Albums = _albumService.Albums.Where(c => c.User.Id == user.Id).ToList();
+
+            return user;
         }
     }
 }

@@ -1,6 +1,7 @@
 using AutoMapper;
 using ImageAlbumAPI.Dtos.GetDtos;
 using ImageAlbumAPI.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace ImageAlbumAPI.Profiles
 {
@@ -10,6 +11,7 @@ namespace ImageAlbumAPI.Profiles
         {
             // GET Dtos
             CreateMap<User, GetUserDto>();
+            CreateMap<IdentityUser, GetUserDto>();
             CreateMap<Album, GetAlbumDto>();
             CreateMap<Photo, GetPhotoDto>();
             CreateMap<GetPhotoDto, Photo>();

@@ -8,8 +8,8 @@ namespace ImageAlbumAPI.Services
     {
         IEnumerable<Photo> GetPhotos();
         Photo GetPhotoById(int id);
-        void LikePhoto(Photo photoModel, Like likeModel);
-        void UnlikePhoto(Photo photoModel, Like likeModel);
+        void LikePhoto(Photo photoModel, string UserId);
+        void UnlikePhoto(Photo photoModel, string UserId);
         void AddComment(Photo photoModel, Comment model);
         void RemoveComment(Photo photoModel, Comment model);
         void AddReply(Comment comment, Reply reply, Photo photo);

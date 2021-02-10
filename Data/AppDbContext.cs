@@ -52,8 +52,9 @@ namespace ImageAlbumAPI.Data
                 .HasDiscriminator<int>("Type")
                 .HasValue<Comment>(0)
                 .HasValue<Reply>(1);
-            
-           
+
+
+
                 
         }   
     

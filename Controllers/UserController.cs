@@ -42,7 +42,6 @@ namespace ImageAlbumAPI.Controllers
         }
 
         // GET: /api/user
-        
         [HttpGet]
 
         public ActionResult<IEnumerable<User>> Get()
@@ -58,7 +57,7 @@ namespace ImageAlbumAPI.Controllers
 
 
             usersGetDto.ForEach(c => c.Albums = new List<GetAlbumDto>(
-               _mapper.Map<IEnumerable<GetAlbumDto>>(_userService.GetUserAlbums(c.UserId).ToList())));
+               _mapper.Map<IEnumerable<GetAlbumDto>>(_userService.GetUserAlbums(c.Id).ToList())));
 
             usersGetDto.ForEach(c => c.Albums
                                         .ForEach(d => d.OwnerName = c.UserName));
@@ -101,7 +100,7 @@ namespace ImageAlbumAPI.Controllers
 
         // GET: /api/user/{id}
         [HttpGet("{id}")]
-        public ActionResult<User> Get(int id)
+        public ActionResult<User> Get(string id)
         {
             var user = _userService.GetUserById(id);
 
@@ -129,74 +128,62 @@ namespace ImageAlbumAPI.Controllers
         }  
 
         // POST: /api/user
-        // public User PostUser([FromBody] User user)
+        // [HttpPost]
+        // public async Task<IActionResult> CreateUser([FromBody] CreateUserModel model)
         // {
-        //     _userService.AddUser(user);
-        //     return user;
+        //     if (ModelState.IsValid)
+        //     {
+        //         User user = new User
+        //         {
+        //             UserName = model.UserName,
+        //             Email = model.Email,
+        //         };
+        //         IdentityResult result = await _userManager.CreateAsync(user, model.Password);
+
+        //         if (result.Succeeded)
+        //         {
+        //             return Ok();
+        //         }
+        //         else 
+        //         {
+        //             foreach (IdentityError error in result.Errors)
+        //             {
+        //                 ModelState.AddModelError("", error.Description);
+        //             }
+        //         }
+        //     }
+        //     return BadRequest(model);
         // }
-        
-        // POST: /api/user
 
-        [HttpPost]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserModel model)
+
+
+        // PATCH: /api/user
+        [HttpPatch()]
+        public async Task<StatusCodeResult> UserPatch([FromBody] JsonPatchDocument<User> patch)
         {
-            if (ModelState.IsValid)
+            // User user = _userManager.Users.FirstOrDefault(c => c.UserId == id);
+            User user = GetCurrentLoggedUser().Result;
+            
+            patch.ApplyTo(user);
+            IdentityResult result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
             {
-                User user = new User
-                {
-                    UserName = model.UserName,
-                    Email = model.Email,
-                };
-                IdentityResult result = await _userManager.CreateAsync(user, model.Password);
-
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }
-                else 
-                {
-                    foreach (IdentityError error in result.Errors)
-                    {
-                        ModelState.AddModelError("", error.Description);
-                    }
-                }
-            }
-            return BadRequest(model);
-        }
-
-
-
-        // PATCH: /api/user/{id}
-        [HttpPatch("{id}")]
-        public async Task<StatusCodeResult> UserPatch(int id, [FromBody] JsonPatchDocument<User> patch)
-        {
-            User user = _userManager.Users.FirstOrDefault(c => c.UserId == id);
-            if (user != null)
-            {
-                patch.ApplyTo(user);
-                IdentityResult result = await _userManager.UpdateAsync(user);
-                if (result.Succeeded)
-                {
-                    return Ok();
-                }
-                else
-                {
-                    AddErrorsFromResult(result);
-                }
+                return Ok();
             }
             else
             {
-                ModelState.AddModelError("", "user not found");
+                AddErrorsFromResult(result);
             }
-            return NotFound();
+            
+            return BadRequest();
         }
 
-        // POST /api/user/{id}/changePassword
-        [HttpPost("{id}/changePassword")]
-        [Route("{id}/changePassword")]
-        public async Task<ActionResult> ChangeUserPassword([FromBody] ChangePasswordModel model, string id)
+        // POST /api/user/changePassword
+        [HttpPost("changePassword")]
+        [Route("changePassword")]
+        public async Task<ActionResult> ChangeUserPassword([FromBody] ChangePasswordModel model)
         {
-            User user = _userManager.Users.FirstOrDefault(c => c.Id == id);
+            User user = GetCurrentLoggedUser().Result;
             if (user.Email == model.Email)
             {
                 user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
@@ -223,11 +210,11 @@ namespace ImageAlbumAPI.Controllers
         }
 
         // DELETE: /api/user/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUser()
         {
-            //_userService.DeleteUser(id);
-            User user = _userManager.Users.FirstOrDefault(c => c.UserId == id);
+            //User user = _userManager.Users.FirstOrDefault(c => c.UserId == id);
+            User user = GetCurrentLoggedUser().Result;
             if (user != null)
             {
                 IdentityResult result  = await _userManager.DeleteAsync(user);
@@ -254,5 +241,8 @@ namespace ImageAlbumAPI.Controllers
                 ModelState.AddModelError("", error.Description);
             }
         }
+
+        private async Task<User> GetCurrentLoggedUser()
+            => await _userManager.FindByNameAsync(HttpContext.User.Identity.Name);
     }
 }

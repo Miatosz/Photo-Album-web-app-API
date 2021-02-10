@@ -20,9 +20,9 @@ namespace ImageAlbumAPI.Services
         }
         public IEnumerable<User> GetUsers()
             => _userRepo.Users;
-        public User GetUserById(int id)
+        public User GetUserById(string id)
         {
-            var user = _userRepo.Users.FirstOrDefault(c => c.UserId == id);
+            var user = _userRepo.Users.FirstOrDefault(c => c.Id == id);
             if (user != null)
             {
                 return user;
@@ -30,14 +30,14 @@ namespace ImageAlbumAPI.Services
             return null;
         }  
 
-        public IEnumerable<Album> GetUserAlbums(int userId)
+        public IEnumerable<Album> GetUserAlbums(string Id)
         {
-            var albums = _albumRepo.Albums.Where(c => c.UserId == userId.ToString());
+            var albums = _albumRepo.Albums.Where(c => c.UserId == Id);
             return albums;
         }
 
 
-        public IEnumerable<Photo> GetUserPhotos(int userId)
+        public IEnumerable<Photo> GetUserPhotos(string Id)
         {
             var photos = _photoRepo.Photos;//.Where(c => c.Album.UserId == userId);
             return photos;
