@@ -73,7 +73,5 @@ To open and run this project, follow this commands:
 
 Then you can test app in e.g. Postman on port 5001(https://localhost:5001/)
 
-##...or simply click here => https://pcpartsshop.azurewebsites.net
-
 
 
