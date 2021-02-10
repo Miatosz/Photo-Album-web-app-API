@@ -6,7 +6,7 @@
   <h1 align="center">Photos Albums </h1>
 
   <p align="center">
-    Social media platform with images sharing and the ability to add likes and comments .
+    Social media platform with images sharing and the ability to add likes, comments and follow other users.
     <br />
     <br />
   </p>
@@ -34,6 +34,7 @@ It is a web application project that is a social networking site with a images s
 * the ability to create albums and describe them,
 * adding comments to photos and replies,
 * liking photos and comments
+* following other users
 
 <!-- USED TECHNOLOGIES -->
 ### Used Technologies
