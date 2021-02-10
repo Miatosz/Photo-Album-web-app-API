@@ -51,7 +51,7 @@ Backend
 * [Entity Framework Core](https://docs.microsoft.com/en-US/ef/core/)
 * [ASP.NET Core Identity](https://docs.microsoft.com/en-US/aspnet/core/security/authentication/identity?view=aspnetcore-5.0&tabs=visual-studio)
 * [AutoMapper](https://automapper.org/)
-* [JWTBearer Authentication]
+* JWTBearer Authentication
 * [NUnit](https://nunit.org/)
 * [Moq](https://github.com/Moq/moq4/wiki/Quickstart)
 
@@ -74,9 +74,7 @@ This section will soon contain steps how to get a local and running copy...
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/UgzSourceCode/SocialKnow.svg?style=flat-square
-[contributors-url]: https://github.com/UgzSourceCode/SocialKnow/graphs/contributors
+[contributors-url]: https://github.com/Miatsz/Photo-Album-web-app-API/graphs/contributors
 [forks-shield]: https://img.shields.io/github/forks/UgzSourceCode/SocialKnow.svg?style=flat-square
 [forks-url]: https://github.com/UgzSourceCode/SocialKnow/network/members
 [stars-shield]: https://img.shields.io/github/stars/UgzSourceCode/SocialKnow.svg?style=flat-square
