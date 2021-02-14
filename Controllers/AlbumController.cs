@@ -18,18 +18,13 @@ namespace ImageAlbumAPI.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IMapper _mapper;
-        private readonly IPhotoService _photoService;
-        private readonly IAlbumService _albumService;
-        private readonly IUserService _userService;
+        private readonly IAlbumService _albumService;   
 
-        public AlbumController(IAlbumService albumService, IPhotoService photoService, IUserService userService, 
-                                    IMapper mapper, UserManager<User> userManager)
+        public AlbumController(IAlbumService albumService, IMapper mapper, UserManager<User> userManager)
         {
             _userManager = userManager;
             _mapper = mapper;
-            _photoService = photoService;
             _albumService = albumService;
-            _userService = userService;
         }
 
         // GET: api/album
@@ -37,11 +32,6 @@ namespace ImageAlbumAPI.Controllers
         public ActionResult<IEnumerable<GetAlbumDto>> Get()
         {
             var albums = _albumService.GetAlbums();
-
-            if (albums == null)
-            {
-                return NotFound();
-            }
 
             var albumsGetDto = new List<GetAlbumDto>();
             albumsGetDto = _mapper.Map<List<GetAlbumDto>>(albums);
@@ -57,7 +47,7 @@ namespace ImageAlbumAPI.Controllers
 
         // GET: api/album/{id}
         [HttpGet("{id}")]
-        public ActionResult<GetAlbumDto> Get(int id)
+        public ActionResult<GetAlbumDto> GetById(int id)
         {
             var album = _albumService.GetAlbumById(id);
             if (album == null)
@@ -84,11 +74,11 @@ namespace ImageAlbumAPI.Controllers
         // POST: api/album
         [HttpPost]
         [Authorize]
-        public ActionResult PostAlbum([FromBody] Album album)
+        public ActionResult<Album> PostAlbum([FromBody] Album album)
         {
             album.User = GetCurrentLoggedUser().Result;
             _albumService.AddAlbum(album);
-            return Ok();
+            return Ok(album);
         }
 
         // DELETE: api/album/{id}
@@ -102,8 +92,7 @@ namespace ImageAlbumAPI.Controllers
             if (user.Albums.Contains(album))
             {
                 _albumService.DeleteAlbum(id);
-            }
-            
+            }            
         }
 
         // PUT: api/album

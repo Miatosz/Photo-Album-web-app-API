@@ -7,7 +7,7 @@ namespace ImageAlbumAPI.Repositories
     {
         IEnumerable<Album> Albums {get;}
         void AddAlbum(Album album);
-        Album DeleteAlbum(int id);
+        void DeleteAlbum(int id);
         void UpdateAlbum(Album album);
     }
 }

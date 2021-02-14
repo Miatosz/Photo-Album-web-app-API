@@ -25,6 +25,13 @@ namespace ImageAlbumAPI.Controllers
 
         // GET: /api/{id}
         [HttpGet("{id}")]
-        public User GetUserById(int id) => _userManager.Users.FirstOrDefault(c => c.UserId == id);
+        public ActionResult<User> GetUserById(string id)
+        {
+            var user = _userManager.Users.FirstOrDefault(c => c.Id == id);
+            if (user == null)
+                return NotFound();
+
+            return Ok(_userManager.Users.FirstOrDefault(c => c.Id == id));
+        } 
     }
 }

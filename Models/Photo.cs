@@ -8,7 +8,7 @@ namespace ImageAlbumAPI.Models
     public class Photo
     {
         [Key]
-        public int Id { get; set; }
+        public int Id { get; set; }        
         public string DateOfAdd { get; set; }
         public string Description { get; set; }
         public string PhotoPath { get; set; }
@@ -21,4 +21,6 @@ namespace ImageAlbumAPI.Models
         [ForeignKey("AlbumId")]
         public Album Album { get; set; }
     }
+
+    
 }

@@ -19,22 +19,22 @@ namespace ImageAlbumAPI.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly IPhotoService _photoService;
-        private readonly IUserService _userService;
+        // private readonly IUserService _userService;
         private readonly IMapper _mapper;
 
-        public PhotoController(IPhotoService photoService, IMapper mapper, IUserService userService, UserManager<User> userManager)
+        public PhotoController(IPhotoService photoService, IMapper mapper, UserManager<User> userManager)
         {
             _userManager = userManager;
             _photoService = photoService;
-            _userService = userService;
+            // _userService = userService;
             _mapper = mapper;
         }
         
         // GET: api/photo
         [HttpGet]
-        public ActionResult<Photo> Get()
+        public ActionResult<IEnumerable<GetPhotoDto>> Get()
         {
-            var photos = _photoService.GetPhotos();
+            var photos = _photoService.Photos;
             var getPhotoDto = _mapper.Map<IEnumerable<GetPhotoDto>>(photos).ToList();
 
             getPhotoDto.ForEach(c => c.Comments  = new List<GetCommentDto>(
@@ -64,7 +64,7 @@ namespace ImageAlbumAPI.Controllers
         // POST: api/photo
         [HttpPost]
         [Authorize]
-        public ActionResult PostPhoto([FromBody] Photo photo)
+        public ActionResult<Photo> PostPhoto([FromBody] Photo photo)
         {
             if (ModelState.IsValid)
             {
@@ -83,26 +83,26 @@ namespace ImageAlbumAPI.Controllers
         public ActionResult LikePhoto(int id)
         {
             var photo = _photoService.GetPhotoById(id);
+            
+            if (photo == null)
+            {
+                return NotFound();
+            }
+
             var user = GetCurrentLoggedUser().Result;
 
-            if (photo != null)
+
+            if (!photo.Likes.Any(c => c.UserId == user.Id))
             {
-                // if (photo.Likes == null)
-                // {
-                //     photo.Likes = new List<Like>();
-                // }
-                if (!photo.Likes.Any(c => c.UserId == user.Id))
-                {
-                    _photoService.LikePhoto(photo, user.Id);
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest("allready liked");
-                }                           
-            }           
-            return NotFound();            
-        }
+                _photoService.LikePhoto(photo, user.Id);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("allready liked");
+            }                           
+        }           
+
 
         // POST: api/photo/{id}/unlike
         [HttpPost("{id}/unlike")]
@@ -111,21 +111,22 @@ namespace ImageAlbumAPI.Controllers
         public ActionResult UnlikePhoto(int id)
         {
             var photo = _photoService.GetPhotoById(id);
+            if (photo == null)
+            {
+                return NotFound();
+            }
+
             var user = GetCurrentLoggedUser().Result;
 
-            if (photo != null)
+            if (photo.Likes.Any(c => c.UserId == user.Id))
             {
-                if (photo.Likes.Any(c => c.UserId == user.Id))
-                {
-                    _photoService.UnlikePhoto(photo, user.Id);
-                    return Ok();
-                }
-                else
-                {
-                    return BadRequest("you didn't liked this photo");
-                }                           
-            }           
-            return NotFound();            
+                _photoService.UnlikePhoto(photo, user.Id);
+                return Ok();
+            }
+            else
+            {
+                return BadRequest("you didn't liked this photo");
+            }                   
         }
 
         
@@ -226,8 +227,9 @@ namespace ImageAlbumAPI.Controllers
             if (user.Photos.FirstOrDefault(c => c.Id == photo.Id) != null)
             {
                 _photoService.UpdatePhoto(photo);
+                return Ok(_mapper.Map<GetPhotoDto>(photo));
             }            
-            return Ok(_mapper.Map<GetPhotoDto>(photo));
+            return NotFound(_mapper.Map<GetPhotoDto>(photo));
         }
 
         // PATCH: api/photo/{id}
@@ -250,7 +252,7 @@ namespace ImageAlbumAPI.Controllers
             return BadRequest();            
         }    
 
-        private async Task<User> GetCurrentLoggedUser()
+        public async Task<User> GetCurrentLoggedUser()
         {   
             var user = await _userManager.FindByNameAsync(HttpContext.User.Identity.Name);
             user.Photos = _photoService.Photos.Where(c => c.Album.UserId == user.Id).ToList();

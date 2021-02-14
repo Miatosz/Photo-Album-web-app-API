@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using ImageAlbumAPI.Data;
 using ImageAlbumAPI.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -29,16 +30,15 @@ namespace ImageAlbumAPI.Repositories
             _context.SaveChanges();
         }
 
-        public ActionResult DeletePhoto(int id)
+        public void DeletePhoto(int id)
         {
             var photo = _context.Photos.Find(id);
-            if (photo != null)
+            if (photo == null)
             {
-                _context.Photos.Remove(photo);
-                _context.SaveChanges();
-                return new OkResult();
+                return;
             }
-            return new NotFoundResult();
+            _context.Photos.Remove(photo);
+            _context.SaveChanges();            
         }
 
         public void UpdatePhoto(Photo photo)
@@ -67,6 +67,41 @@ namespace ImageAlbumAPI.Repositories
                 updatedPhoto.Comments = photo.Comments;
             }
             _context.SaveChanges();
+        }
+
+        public Photo GetPhotoById(int id)
+        {
+            var photo = this.Photos?.ToList().FirstOrDefault(c => c.Id == id);
+            if (photo != null)
+            {
+                return photo;
+            }
+            return null; 
+        }
+       
+
+        public void UnlikePhoto(Photo photoModel, string UserId)
+        {
+            photoModel.NumberOfLikes--;
+            photoModel.Likes.RemoveAll(c => c.UserId == UserId);
+            UpdatePhoto(photoModel);   
+        }
+
+
+
+        public void AddReply(Comment comment, Reply reply, Photo photo)
+        {
+            if (comment.Replies == null)
+            {
+                comment.Replies = new List<Reply>();
+            }
+            comment.Replies.Add(reply);
+            UpdateComments(photo);
+        }
+
+        public void RemoveReply(Comment comment, Reply reply)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

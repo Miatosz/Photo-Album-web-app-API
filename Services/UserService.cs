@@ -36,10 +36,9 @@ namespace ImageAlbumAPI.Services
             return albums;
         }
 
-
-        public IEnumerable<Photo> GetUserPhotos(string Id)
+        public IEnumerable<Photo> GetUserPhotos(string userId)
         {
-            var photos = _photoRepo.Photos;//.Where(c => c.Album.UserId == userId);
+            var photos = _photoRepo.Photos.Where(c => c.Album.UserId == userId);
             return photos;
         }
 

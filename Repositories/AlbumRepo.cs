@@ -25,15 +25,15 @@ namespace ImageAlbumAPI.Repositories
             _context.SaveChanges();
         }
 
-        public Album DeleteAlbum(int id)
+        public void DeleteAlbum(int id)
         {
             var album = _context.Albums.Find(id);
-            if (album != null)
+            if (album == null)
             {
-                _context.Remove(album);
-                _context.SaveChanges();
+                return;
             }
-            return album;
+            _context.Remove(album);
+            _context.SaveChanges();
         }
 
         public void UpdateAlbum(Album album)
