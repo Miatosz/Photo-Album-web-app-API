@@ -17,6 +17,7 @@
 
 * [About the Project](#about-the-project)
 * [Used Technologies](#used-technologies)
+* [CI/CD](#cicd)
 * [Setup](#setup)
 
 
@@ -54,6 +55,11 @@ Frontend
 * TypeScript
 * HTML
 * CSS
+
+---
+
+## CI/CD
+This project includes a GitHub Actions workflow that automatically builds the project and runs tests on each push or pull request.
 
 ---
 
